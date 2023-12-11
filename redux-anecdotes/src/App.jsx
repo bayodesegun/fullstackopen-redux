@@ -12,6 +12,17 @@ const App = () => {
     dispatch(action)
   }
 
+  const createAnecdote = (event) => {
+    event.preventDefault()
+    const content = event.target.anecdote.value
+    const action = {
+      type: 'CREATE',
+      payload: { content }
+    }
+    dispatch(action)
+    event.target.anecdote.value = ''
+  }
+
   return (
     <div>
       <h2>Anecdotes</h2>
@@ -27,9 +38,9 @@ const App = () => {
         </div>
       )}
       <h2>create new</h2>
-      <form>
-        <div><input /></div>
-        <button>create</button>
+      <form onSubmit={createAnecdote} id='create-anecdote-form'>
+        <div><input type='text' name='anecdote' /></div>
+        <button type='submit' id='create-anecdote'>create</button>
       </form>
     </div>
   )

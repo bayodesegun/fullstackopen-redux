@@ -29,4 +29,20 @@ describe('anecdote reducer', () => {
     const newAnectode = newState.find(id => id.id === anecdote.id)
     expect(newAnectode.votes).toBe(anecdote.votes + 1)
   })
+
+  test('allows a given anecdote to be CREATED', () => {
+    const content = 'This is a new anecdote'
+    const action = {
+      type: 'CREATE',
+      payload: {
+        content
+      }
+    }
+    const state = initialState
+
+    deepFreeze(state)
+    const newState = anecdoteReducer(state, action)
+    expect(newState.length).toBe(state.length + 1)
+    expect(newState.filter(anect => anect.content === content).length).toBe(1)
+  })
 })
