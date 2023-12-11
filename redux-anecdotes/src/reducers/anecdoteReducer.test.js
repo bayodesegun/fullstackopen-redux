@@ -14,6 +14,18 @@ describe('anecdote reducer', () => {
     expect(newState).toEqual(initialState)
   })
 
+  test('sorts the states', () => {
+    const action = {
+      type: 'DO_NOTHING'
+    }
+    const state = [
+      initialState[0], initialState[1]
+    ]
+    state[1].votes = 3
+    const newState = anecdoteReducer(state, action)
+    expect(newState[0].content).toEqual(initialState[1].content)
+  })
+
   test('allows a given anecdote to be voted', () => {
     const anecdote = initialState[0]
     const action = {

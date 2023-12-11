@@ -17,13 +17,20 @@ const asObject = (anecdote) => {
   }
 }
 
-export const initialState = anecdotesAtStart.map(asObject)
+const sorted = (_state) => {
+  let state = [ ..._state ]
+  state.sort((a, b) => b.votes - a.votes)
+  return state
+}
+
+export const initialState = sorted(anecdotesAtStart.map(asObject))
 
 const reducer = (state = initialState, action) => {
+  let reducedState = state
   switch (action.type) {
     case 'VOTE': {
-      const id = action.payload ? action.payload.id : 0
-      return state.map((anecdote) => {
+      const id = action.payload.id
+      reducedState = state.map((anecdote) => {
         if (anecdote.id === id) {
           return {
            ...anecdote,
@@ -32,6 +39,7 @@ const reducer = (state = initialState, action) => {
         }
         return anecdote
       })
+      break
     }
     case 'CREATE': {
       const content = action.payload.content
@@ -40,11 +48,11 @@ const reducer = (state = initialState, action) => {
         id: getId(),
         votes: 0
       }
-      return state.concat(newAnectode)
+      reducedState = state.concat(newAnectode)
+      break
     }
-    default:
-      return state
   }
+  return sorted(reducedState)
 }
 
 export default reducer
