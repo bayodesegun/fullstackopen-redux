@@ -6,6 +6,7 @@ import { createStore } from 'redux'
 import reducer from '../reducers/anecdoteReducer'
 import AnecdoteForm from './AnecdoteForm'
 
+
 describe('<AnecdoteForm /> component tests', () => {
   let container
   let store = createStore(reducer)

@@ -6,6 +6,7 @@ import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 import reducer from './reducers/anecdoteReducer'
 
+
 describe('<App /> root component integration tests', () => {
   let container
   let store = createStore(reducer)
