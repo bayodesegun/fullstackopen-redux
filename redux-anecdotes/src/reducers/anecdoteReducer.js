@@ -25,6 +25,20 @@ const sorted = (_state) => {
 
 export const initialState = sorted(anecdotesAtStart.map(asObject))
 
+export const voteAnecdote = (id) => {
+  return {
+    type: 'VOTE',
+    payload: { id }
+  }
+}
+
+export const createAnecdote = (content) => {
+  return {
+    type: 'CREATE',
+    payload: { content }
+  }
+}
+
 const reducer = (state = initialState, action) => {
   let reducedState = state
   switch (action.type) {
