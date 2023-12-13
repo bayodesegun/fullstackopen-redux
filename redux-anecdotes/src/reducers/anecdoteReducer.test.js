@@ -3,7 +3,7 @@ import anecdoteReducer from './anecdoteReducer'
 import { initialState } from './anecdoteReducer'
 
 
-describe('anecdote reducer', () => {
+describe('Anecdote reducer tests', () => {
 
   test('returns a proper initial state when called with undefined state', () => {
     const action = {
