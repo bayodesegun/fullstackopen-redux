@@ -1,15 +1,13 @@
 import '@testing-library/jest-dom'
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import AnecdoteList from './AnecdoteList'
 import { Provider } from 'react-redux'
-import { createStore } from 'redux'
-import reducer from '../reducers/anecdoteReducer'
+import store from '../store'
+import AnecdoteList from './AnecdoteList'
 
 
-describe('<AnectdoteList /> component tests', () => {
+describe('<AnectdoteList /> component', () => {
   let container
-  let store = createStore(reducer)
 
   beforeAll(() => {
     console.warn = jest.fn()
@@ -24,7 +22,7 @@ describe('<AnectdoteList /> component tests', () => {
   })
 
   test('renders correctly', async () => {
-    const anecdoteList = store.getState()
+    const anecdoteList = store.getState().anecdotes
 
     const anecdotes = container.querySelectorAll('.anecdote')
     expect(anecdotes.length).toBe(anecdoteList.length)
@@ -38,7 +36,7 @@ describe('<AnectdoteList /> component tests', () => {
     expect(btn.textContent).toBe('vote')
   })
 
-  test('Can vote an anecdote', async () => {
+  test('can vote an anecdote', async () => {
     const user = userEvent.setup()
 
     const anecdote = container.querySelectorAll('.anecdote')[0]

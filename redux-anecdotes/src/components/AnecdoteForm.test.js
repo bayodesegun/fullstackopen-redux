@@ -2,14 +2,12 @@ import '@testing-library/jest-dom'
 import { render, screen, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Provider } from 'react-redux'
-import { createStore } from 'redux'
-import reducer from '../reducers/anecdoteReducer'
+import { anecdoteStore as store } from '../store'
 import AnecdoteForm from './AnecdoteForm'
 
 
-describe('<AnecdoteForm /> component tests', () => {
+describe('<AnecdoteForm /> component', () => {
   let container
-  let store = createStore(reducer)
 
   beforeAll(() => {
     console.warn = jest.fn()
@@ -30,7 +28,7 @@ describe('<AnecdoteForm /> component tests', () => {
     expect(form).not.toBeNull()
   })
 
-  test('Can create an anecdote', async () => {
+  test('can create an anecdote', async () => {
     const initialDotes = store.getState()
     const user = userEvent.setup()
     const anecdoteInput = container.querySelector('input[name="anecdote"]')

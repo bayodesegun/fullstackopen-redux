@@ -1,15 +1,13 @@
 import '@testing-library/jest-dom'
 import { render, screen, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import App from './App'
 import { Provider } from 'react-redux'
-import { createStore } from 'redux'
-import reducer from './reducers/anecdoteReducer'
+import store from './store'
+import App from './App'
 
 
-describe('<App /> root component integration tests', () => {
+describe('<App /> root component (integration)', () => {
   let container
-  let store = createStore(reducer)
 
   beforeAll(() => {
     console.warn = jest.fn()
@@ -27,6 +25,11 @@ describe('<App /> root component integration tests', () => {
     const title = screen.getByText('Anecdotes')
     expect(title).not.toBeNull()
 
+    const filterText = screen.getByText('filter')
+    expect(filterText).not.toBe(null)
+    const input = container.querySelector('input[name="anecdote_filter"]')
+    expect(input).not.toBeNull()
+
     const anecdotes = container.querySelectorAll('.anecdote')
     expect(anecdotes.length).toBeGreaterThan(0)
 
@@ -43,7 +46,7 @@ describe('<App /> root component integration tests', () => {
     expect(form).not.toBeNull()
   })
 
-  test('Can vote an anecdote', async () => {
+  test('can vote an anecdote', async () => {
     const user = userEvent.setup()
 
     const anecdote = container.querySelectorAll('.anecdote')[0]
@@ -54,7 +57,7 @@ describe('<App /> root component integration tests', () => {
     expect(anecdote.textContent).toContain('has 1')
   })
 
-  test('Can create an anecdote', async () => {
+  test('can create an anecdote', async () => {
     const user = userEvent.setup()
     const initialAnecdotes = container.querySelectorAll('.anecdote')
 
@@ -69,5 +72,17 @@ describe('<App /> root component integration tests', () => {
 
     const finalAnectdotes = container.querySelectorAll('.anecdote')
     expect(finalAnectdotes.length).toBe(initialAnecdotes.length + 1)
+  })
+
+  test('filter works correctly', async () => {
+    const user = userEvent.setup()
+    const initialAnecdotes = container.querySelectorAll('.anecdote')
+    const filter = store.getState().anecdotes[0].content.split(' ')[0]
+
+    const input = container.querySelector('input[name="anecdote_filter"]')
+    await user.type(input, filter)
+
+    const finalAnectdotes = container.querySelectorAll('.anecdote')
+    expect(finalAnectdotes.length).toBeLessThan(initialAnecdotes.length)
   })
 })
