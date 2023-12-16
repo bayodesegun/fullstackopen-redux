@@ -20,9 +20,7 @@ describe('Anecdote reducer', () => {
     ]
     const action = {
       type: 'anecdotes/voteAnecdote',
-      payload: {
-        id: initialState[1].id
-      }
+      payload: initialState[1].id
     }
     deepFreeze(state)
     const newState = anecdoteReducer(state, action)
@@ -33,9 +31,7 @@ describe('Anecdote reducer', () => {
     const anecdote = initialState[0]
     const action = {
       type: 'anecdotes/voteAnecdote',
-      payload:{
-        id: anecdote.id
-      }
+      payload: anecdote.id
     }
     const state = initialState
 
@@ -49,9 +45,7 @@ describe('Anecdote reducer', () => {
     const content = 'This is a new anecdote'
     const action = {
       type: 'anecdotes/createAnecdote',
-      payload: {
-        content
-      }
+      payload: content
     }
     const state = initialState
 
