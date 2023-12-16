@@ -18,7 +18,7 @@ describe('Filter reducer', () => {
   test('properly changes the filter', () => {
     const payload = 'and'
     const action = {
-      type: 'CHANGE',
+      type: 'filter/changeFilter',
       payload
     }
     const state = initialState
