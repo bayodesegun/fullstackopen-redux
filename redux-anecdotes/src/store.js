@@ -1,4 +1,3 @@
-import { createStore } from 'redux'
 import { configureStore } from '@reduxjs/toolkit'
 import anecdoteReducer from './reducers/anecdoteReducer'
 import filterReducer from './reducers/filterReducer'
@@ -11,7 +10,7 @@ const mainStore = configureStore({
   }
 })
 
-export const anecdoteStore = createStore(anecdoteReducer)
-export const filterStore = createStore(filterReducer)
+export const anecdoteStore = configureStore({ reducer: anecdoteReducer })
+export const filterStore = configureStore({ reducer: filterReducer })
 
 export default mainStore

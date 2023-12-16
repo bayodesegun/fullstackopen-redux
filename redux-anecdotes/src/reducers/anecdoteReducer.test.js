@@ -15,13 +15,16 @@ describe('Anecdote reducer', () => {
   })
 
   test('sorts the states', () => {
-    const action = {
-      type: 'DO_NOTHING'
-    }
     const state = [
       initialState[0], initialState[1]
     ]
-    state[1].votes = 3
+    const action = {
+      type: 'anecdotes/voteAnecdote',
+      payload: {
+        id: initialState[1].id
+      }
+    }
+    deepFreeze(state)
     const newState = anecdoteReducer(state, action)
     expect(newState[0].content).toEqual(initialState[1].content)
   })
@@ -29,7 +32,7 @@ describe('Anecdote reducer', () => {
   test('allows a given anecdote to be voted', () => {
     const anecdote = initialState[0]
     const action = {
-      type: 'VOTE',
+      type: 'anecdotes/voteAnecdote',
       payload:{
         id: anecdote.id
       }
@@ -45,7 +48,7 @@ describe('Anecdote reducer', () => {
   test('allows a given anecdote to be CREATED', () => {
     const content = 'This is a new anecdote'
     const action = {
-      type: 'CREATE',
+      type: 'anecdotes/createAnecdote',
       payload: {
         content
       }
