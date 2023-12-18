@@ -1,24 +1,42 @@
 import '@testing-library/jest-dom'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, act} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Provider } from 'react-redux'
 import store from './store'
 import App from './App'
 
 
+const checkNotification = (notification, container) => {
+  let notificationDiv = container.querySelector('#anecdote-notification')
+  expect(notificationDiv.textContent).toBe(notification)
+
+  act(() => {
+    jest.advanceTimersByTime(5000)
+  })
+  notificationDiv = container.querySelector('#anecdote-notification')
+  expect(notificationDiv).toBe(null)
+}
+
 describe('<App /> root component (integration)', () => {
-  let container
+  let container, user
 
   beforeAll(() => {
     console.warn = jest.fn()
   })
 
   beforeEach(() => {
+    jest.useFakeTimers()
     container = render(
       <Provider store={store}>
         <App />
       </Provider>
     ).container
+    user = userEvent.setup({ delay: null })
+  })
+
+  afterEach(() => {
+    jest.runOnlyPendingTimers()
+    jest.useRealTimers()
   })
 
   test('renders correctly', async () => {
@@ -47,18 +65,18 @@ describe('<App /> root component (integration)', () => {
   })
 
   test('can vote an anecdote', async () => {
-    const user = userEvent.setup()
-
     const anecdote = container.querySelectorAll('.anecdote')[0]
     expect(anecdote.textContent).toContain('has 0')
 
     const voteBtn = anecdote.querySelector('button')
     await user.click(voteBtn)
     expect(anecdote.textContent).toContain('has 1')
+
+    const notification = `You voted "${anecdote.textContent.split('has')[0]}"`
+    checkNotification(notification, container)
   })
 
   test('can create an anecdote', async () => {
-    const user = userEvent.setup()
     const initialAnecdotes = container.querySelectorAll('.anecdote')
 
     const anecdoteInput = container.querySelector('input[name="anecdote"]')
@@ -68,14 +86,16 @@ describe('<App /> root component (integration)', () => {
     expect(anecdoteInput.value).toBe(anecdote)
     const form = container.querySelector('#create-anecdote-form')
     expect(form).not.toBe(null)
-    fireEvent.submit(form, { target : { anecdote : { value : anecdote }}})
 
+    fireEvent.submit(form, { target : { anecdote : { value : anecdote }}})
     const finalAnectdotes = container.querySelectorAll('.anecdote')
     expect(finalAnectdotes.length).toBe(initialAnecdotes.length + 1)
+
+    const notification = `You created "${anecdote}"`
+    checkNotification(notification, container)
   })
 
   test('filter works correctly', async () => {
-    const user = userEvent.setup()
     const initialAnecdotes = container.querySelectorAll('.anecdote')
     const filter = store.getState().anecdotes[0].content.split(' ')[0]
 

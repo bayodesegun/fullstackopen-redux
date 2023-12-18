@@ -15,10 +15,10 @@ describe('Notification reducer', () => {
     expect(newState).toEqual(initialState)
   })
 
-  test('properly changes the notification', () => {
+  test('properly sets the notification', () => {
     const payload = 'New notification!'
     const action = {
-      type: 'notification/changeNotification',
+      type: 'notification/setNotification',
       payload
     }
     const state = initialState
@@ -26,5 +26,23 @@ describe('Notification reducer', () => {
     deepFreeze(state)
     const newState = notificationReducer(state, action)
     expect(newState).toBe(payload)
+  })
+
+  test('properly clears the notification', () => {
+    const payload = 'New notification!'
+    const actionSet = {
+      type: 'notification/setNotification',
+      payload
+    }
+    const actionClear = {
+      type: 'notification/clearNotification'
+    }
+    const state = initialState
+
+    deepFreeze(state)
+    let newState = notificationReducer(state, actionSet)
+    expect(newState).toBe(payload)
+    newState = notificationReducer(state, actionClear)
+    expect(newState).toBe(initialState)
   })
 })

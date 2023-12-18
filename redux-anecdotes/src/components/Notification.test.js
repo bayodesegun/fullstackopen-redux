@@ -3,7 +3,7 @@ import { render, act } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import store from '../store'
 import Notification from './Notification'
-import { changeNotification } from '../reducers/notificationReducer'
+import { setNotification } from '../reducers/notificationReducer'
 
 
 describe('<Notification /> component', () => {
@@ -29,7 +29,7 @@ describe('<Notification /> component', () => {
     // Notification state changed
     const notification = 'This is a new notification'
     act(() => {
-      store.dispatch(changeNotification(notification))
+      store.dispatch(setNotification(notification))
     })
     const notificationDiv2 = container.querySelector('#anecdote-notification')
     expect(notificationDiv2.textContent).toBe(notification)
