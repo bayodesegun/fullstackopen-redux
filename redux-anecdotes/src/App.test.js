@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { Provider } from 'react-redux'
 import store from './store'
 import App from './App'
+import anecdoteService from './services/anecdotes'
 
 
 const checkNotification = (notification, container) => {
@@ -22,6 +23,7 @@ describe('<App /> root component (integration)', () => {
 
   beforeAll(() => {
     console.warn = jest.fn()
+    jest.spyOn(anecdoteService,'getAll')
   })
 
   beforeEach(() => {
@@ -104,5 +106,10 @@ describe('<App /> root component (integration)', () => {
 
     const finalAnectdotes = container.querySelectorAll('.anecdote')
     expect(finalAnectdotes.length).toBeLessThan(initialAnecdotes.length)
+  })
+
+  test('fetches data from the backend', async () => {
+    expect(anecdoteService.getAll).toHaveBeenCalled()
+    expect(anecdoteService.getAll.mock.results).toBeDefined()
   })
 })

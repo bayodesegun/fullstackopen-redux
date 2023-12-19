@@ -1,6 +1,5 @@
 import deepFreeze from 'deep-freeze'
-import anecdoteReducer from './anecdoteReducer'
-import { initialState } from './anecdoteReducer'
+import anecdoteReducer, { initialState } from './anecdoteReducer'
 
 
 describe('Anecdote reducer', () => {
@@ -53,5 +52,18 @@ describe('Anecdote reducer', () => {
     const newState = anecdoteReducer(state, action)
     expect(newState.length).toBe(state.length + 1)
     expect(newState.filter(anect => anect.content === content).length).toBe(1)
+  })
+
+  test('can set anecdotes', () => {
+    const anecdotes = []
+    const action = {
+      type: 'anecdotes/setAnecdotes',
+      payload: anecdotes
+    }
+    const state = initialState
+
+    deepFreeze(state)
+    const newState = anecdoteReducer(state, action)
+    expect(newState.length).toBe(anecdotes.length)
   })
 })

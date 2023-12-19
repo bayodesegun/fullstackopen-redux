@@ -53,9 +53,12 @@ const anecdoteSlice = createSlice({
       }
       const reducedState = state.concat(newAnectode)
       return sorted(reducedState)
+    },
+    setAnecdotes(state, action) {
+      return sorted(action.payload)
     }
   }
 })
 
-export const { voteAnecdote, createAnecdote } = anecdoteSlice.actions
+export const { voteAnecdote, createAnecdote, setAnecdotes } = anecdoteSlice.actions
 export default anecdoteSlice.reducer
