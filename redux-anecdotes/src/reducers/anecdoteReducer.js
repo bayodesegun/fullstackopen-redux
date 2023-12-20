@@ -46,12 +46,7 @@ const anecdoteSlice = createSlice({
     },
     createAnecdote(state, action) {
       const content = action.payload
-      const newAnectode = {
-        content,
-        id: getId(),
-        votes: 0
-      }
-      const reducedState = state.concat(newAnectode)
+      const reducedState = state.concat(content)
       return sorted(reducedState)
     },
     setAnecdotes(state, action) {

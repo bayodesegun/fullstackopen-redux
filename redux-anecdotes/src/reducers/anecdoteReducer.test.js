@@ -41,17 +41,20 @@ describe('Anecdote reducer', () => {
   })
 
   test('allows a given anecdote to be CREATED', () => {
-    const content = 'This is a new anecdote'
+    const data = {
+      content: 'This is a new anecdote',
+      votes: 0
+    }
     const action = {
       type: 'anecdotes/createAnecdote',
-      payload: content
+      payload: data
     }
     const state = initialState
 
     deepFreeze(state)
     const newState = anecdoteReducer(state, action)
     expect(newState.length).toBe(state.length + 1)
-    expect(newState.filter(anect => anect.content === content).length).toBe(1)
+    expect(newState.filter(anect => anect.content === data.content).length).toBe(1)
   })
 
   test('can set anecdotes', () => {
