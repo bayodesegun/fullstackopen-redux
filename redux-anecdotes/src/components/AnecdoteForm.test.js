@@ -3,19 +3,9 @@ import { render, screen, fireEvent} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Provider } from 'react-redux'
 import { anecdoteStore as store } from '../store'
-import { useDispatch } from 'react-redux'
 import AnecdoteForm from './AnecdoteForm'
 import anecdoteService from '../services/anecdotes'
-
-
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn()
-}))
-
-const useDispatchMock = useDispatch
-const dispatchMock = jest.fn()
-useDispatchMock.mockImplementation(() => dispatchMock)
+// import { useDispatchMock, dispatchMock } from '../test/mocks'
 
 
 describe('<AnecdoteForm /> component', () => {
@@ -51,10 +41,11 @@ describe('<AnecdoteForm /> component', () => {
     expect(anecdoteInput.value).toBe(anecdote)
     const form = container.querySelector('#create-anecdote-form')
     expect(form).not.toBe(null)
-    fireEvent.submit(form, { target : { anecdote : { value : anecdote }}})
+    let fakeEvent = { target : { anecdote : { value : anecdote }}}
+    fireEvent.submit(form, fakeEvent)
     expect(anecdoteService.create).toHaveBeenCalledTimes(1)
     expect(anecdoteService.create).toHaveBeenCalledWith(content)
-    expect(useDispatchMock).toHaveBeenCalled()
-    expect(dispatchMock).toHaveBeenCalled()
+    // expect(useDispatchMock).toHaveBeenCalled()
+    // expect(dispatchMock).toHaveBeenCalled()
   })
 })

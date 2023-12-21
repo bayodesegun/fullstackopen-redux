@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { Provider } from 'react-redux'
 import store from './store'
 import App from './App'
-import anecdoteService from './services/anecdotes'
+import * as anecdoteReducer from './reducers/anecdoteReducer'
 
 
 const checkNotification = (notification, container) => {
@@ -22,18 +22,19 @@ describe('<App /> root component (integration)', () => {
 
   beforeAll(() => {
     console.warn = jest.fn()
-    jest.spyOn(anecdoteService, 'getAll').mockImplementation(() => new Promise(() => []))
   })
 
   beforeEach(() => {
     jest.useFakeTimers()
-    container = render(
-      <Provider store={store}>
-        <App />
-      </Provider>
-    ).container
+    jest.spyOn(anecdoteReducer, 'initializeAnecdotes')
+    act(() => {
+      container = render(
+        <Provider store={store}>
+          <App />
+        </Provider>
+      ).container
+    })
     user = userEvent.setup({ delay: null })
-    expect(anecdoteService.getAll).toHaveBeenCalled()
   })
 
   afterEach(() => {
@@ -41,6 +42,11 @@ describe('<App /> root component (integration)', () => {
       jest.runOnlyPendingTimers()
     })
     jest.useRealTimers()
+  })
+
+  test('initializes anecdotes by calling the Redux Thunk', async () => {
+    screen.getAllByText('has 0')
+    expect(anecdoteReducer.initializeAnecdotes).toHaveBeenCalled()
   })
 
   test('renders correctly', async () => {
@@ -85,8 +91,6 @@ describe('<App /> root component (integration)', () => {
     const anecdoteInput = container.querySelector('input[name="anecdote"]')
     expect(anecdoteInput).not.toBe(null)
     const anecdote = 'This is a new anectdote'
-    const content = { content : anecdote, votes: 0 }
-    jest.spyOn(anecdoteService, 'create').mockImplementation(() => new Promise(() => content))
 
     await user.type(anecdoteInput, anecdote)
     expect(anecdoteInput.value).toBe(anecdote)

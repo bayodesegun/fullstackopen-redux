@@ -1,5 +1,8 @@
 import deepFreeze from 'deep-freeze'
-import anecdoteReducer, { initialState } from './anecdoteReducer'
+import anecdoteReducer, { initializeAnecdotes } from './anecdoteReducer'
+import { initialState } from '../test/data'
+import anecdoteService from '../services/anecdotes'
+import { dispatchMock } from '../test/mocks'
 
 
 describe('Anecdote reducer', () => {
@@ -68,5 +71,18 @@ describe('Anecdote reducer', () => {
     deepFreeze(state)
     const newState = anecdoteReducer(state, action)
     expect(newState.length).toBe(anecdotes.length)
+  })
+
+  test('can initialize anecdotes by fetching from server', async () => {
+    jest.spyOn(anecdoteService, 'getAll').mockImplementation(async () => {
+      return initialState
+    })
+    const action = {
+      type: 'anecdotes/setAnecdotes',
+      payload: initialState
+    }
+    await initializeAnecdotes()(dispatchMock)
+    expect(anecdoteService.getAll).toHaveBeenCalled()
+    expect(dispatchMock).toHaveBeenCalledWith(action)
   })
 })
