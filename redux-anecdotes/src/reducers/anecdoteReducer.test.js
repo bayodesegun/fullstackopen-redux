@@ -1,5 +1,5 @@
 import deepFreeze from 'deep-freeze'
-import anecdoteReducer, { initializeAnecdotes } from './anecdoteReducer'
+import anecdoteReducer, { initializeAnecdotes, createAnecdote } from './anecdoteReducer'
 import { initialState } from '../test/data'
 import anecdoteService from '../services/anecdotes'
 import { dispatchMock } from '../test/mocks'
@@ -43,13 +43,13 @@ describe('Anecdote reducer', () => {
     expect(newAnectode.votes).toBe(anecdote.votes + 1)
   })
 
-  test('allows a given anecdote to be CREATED', () => {
+  test('allows a given anecdote to be appended', () => {
     const data = {
       content: 'This is a new anecdote',
       votes: 0
     }
     const action = {
-      type: 'anecdotes/createAnecdote',
+      type: 'anecdotes/appendAnecdote',
       payload: data
     }
     const state = initialState
@@ -73,7 +73,7 @@ describe('Anecdote reducer', () => {
     expect(newState.length).toBe(anecdotes.length)
   })
 
-  test('can initialize anecdotes by fetching from server', async () => {
+  test('can initialize anecdotes using the Redux Thunk method', async () => {
     jest.spyOn(anecdoteService, 'getAll').mockImplementation(async () => {
       return initialState
     })
@@ -83,6 +83,20 @@ describe('Anecdote reducer', () => {
     }
     await initializeAnecdotes()(dispatchMock)
     expect(anecdoteService.getAll).toHaveBeenCalled()
+    expect(dispatchMock).toHaveBeenCalledWith(action)
+  })
+
+  test('can create anectode using the Redux Thunk method', async () => {
+    const content = { content: 'This is a new anecdote', votes: 0 }
+    jest.spyOn(anecdoteService, 'create').mockImplementation(async () => {
+      return content
+    })
+    const action = {
+      type: 'anecdotes/appendAnecdote',
+      payload: content
+    }
+    await createAnecdote(content)(dispatchMock)
+    expect(anecdoteService.create).toHaveBeenCalledWith(content)
     expect(dispatchMock).toHaveBeenCalledWith(action)
   })
 })

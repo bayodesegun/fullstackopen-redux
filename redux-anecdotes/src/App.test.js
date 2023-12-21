@@ -5,6 +5,7 @@ import { Provider } from 'react-redux'
 import store from './store'
 import App from './App'
 import * as anecdoteReducer from './reducers/anecdoteReducer'
+import anecdoteService from './services/anecdotes'
 
 
 const checkNotification = (notification, container) => {
@@ -91,6 +92,8 @@ describe('<App /> root component (integration)', () => {
     const anecdoteInput = container.querySelector('input[name="anecdote"]')
     expect(anecdoteInput).not.toBe(null)
     const anecdote = 'This is a new anectdote'
+    const content = { content : anecdote, votes: 0 }
+    jest.spyOn(anecdoteService, 'create').mockImplementation(async () => ({...content, id: 333}))
 
     await user.type(anecdoteInput, anecdote)
     expect(anecdoteInput.value).toBe(anecdote)
@@ -100,6 +103,7 @@ describe('<App /> root component (integration)', () => {
     act(() => {
       fireEvent.submit(form, { target : { anecdote : { value : anecdote }}})
     })
+    screen.getByText(anecdote)
     const finalAnectdotes = container.querySelectorAll('.anecdote')
     expect(finalAnectdotes.length).toBe(initialAnecdotes.length + 1)
 
