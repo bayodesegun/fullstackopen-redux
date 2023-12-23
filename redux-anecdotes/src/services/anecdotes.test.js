@@ -16,4 +16,11 @@ describe('Anecdote service', () => {
     const data = await anecdoteService.create(content)
     expect(data).toEqual(content)
   })
+
+  test('update works properly', async () => {
+    const content = { content: 'test content', votes: 0 }
+    jest.spyOn(axios, 'put').mockImplementation(() => Promise.resolve({ data: {...content, votes: 1} }))
+    const data = await anecdoteService.update(content)
+    expect(data).toEqual({ ...content, votes: 1 })
+  })
 })

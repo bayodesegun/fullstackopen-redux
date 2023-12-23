@@ -4,6 +4,8 @@ import userEvent from '@testing-library/user-event'
 import { Provider } from 'react-redux'
 import store from '../store'
 import AnecdoteList from './AnecdoteList'
+import anecdoteService from '../services/anecdotes'
+import * as anecdoteReducer from '../reducers/anecdoteReducer'
 
 
 describe('<AnectdoteList /> component', () => {
@@ -11,6 +13,7 @@ describe('<AnectdoteList /> component', () => {
 
   beforeAll(() => {
     console.warn = jest.fn()
+    jest.spyOn(anecdoteReducer, 'voteAnecdote')
   })
 
   beforeEach(() => {
@@ -38,12 +41,14 @@ describe('<AnectdoteList /> component', () => {
 
   test('can vote an anecdote', async () => {
     const user = userEvent.setup()
-
     const anecdote = container.querySelectorAll('.anecdote')[0]
     expect(anecdote.textContent).toContain('has 0')
+    const content = store.getState().anecdotes[0]
+    jest.spyOn(anecdoteService, 'update').mockImplementation(async () => ({ ...content, votes: 2}))
 
     const voteBtn = anecdote.querySelector('button')
     await user.click(voteBtn)
-    expect(anecdote.textContent).toContain('has 1')
+    expect(anecdote.textContent).toContain('has 2')
+    expect(anecdoteReducer.voteAnecdote).toHaveBeenCalledWith(content)
   })
 })
