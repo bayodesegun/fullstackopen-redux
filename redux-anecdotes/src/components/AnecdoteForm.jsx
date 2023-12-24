@@ -6,6 +6,10 @@ import { setTimedNotification } from '../reducers/notificationReducer'
 const AnecdoteForm = () => {
   const dispatch = useDispatch()
 
+  /**
+   * The function creates a new anecdote with the given text and dispatches actions to update the state
+   * and display a notification.
+   */
   const create = (event) => {
     event.preventDefault()
     const text = event.target.anecdote.value

@@ -5,6 +5,10 @@ import { changeFilter } from '../reducers/filterReducer'
 const Filter = () => {
     const dispatch = useDispatch()
 
+    /**
+     * The handleChange function prevents the default behavior of an event, retrieves the value from
+     * the event target, and dispatches a changeFilter action with the retrieved value.
+     */
     const handleChange = (event) => {
       event.preventDefault()
       const filter = event.target.value

@@ -33,19 +33,24 @@ describe('<AnecdoteForm /> component', () => {
   })
 
   test('can create an anecdote', async () => {
+    const initialAnecdotes = store.getState()
     const anecdote = 'This is a new anectdote'
     const content = { content : anecdote, votes: 0 }
     jest.spyOn(anecdoteService, 'create').mockImplementation(async () => ({ ...content, id: 222}))
     const anecdoteInput = container.querySelector('input[name="anecdote"]')
     expect(anecdoteInput).not.toBe(null)
-    await user.type(anecdoteInput, anecdote)
-    expect(anecdoteInput.value).toBe(anecdote)
+    await act(async () => {
+      await user.type(anecdoteInput, anecdote)
+      expect(anecdoteInput.value).toBe(anecdote)
+    })
     const form = container.querySelector('#create-anecdote-form')
     expect(form).not.toBe(null)
     let fakeEvent = { target : { anecdote : { value : anecdote }}}
-    act(() => {
+    await act(async () => {
       fireEvent.submit(form, fakeEvent)
     })
     expect(anecdoteReducer.createAnecdote).toHaveBeenCalledWith(content)
+    const finalAnectdotes = store.getState()
+    expect(finalAnectdotes.length).toBe(initialAnecdotes.length + 1)
   })
 })

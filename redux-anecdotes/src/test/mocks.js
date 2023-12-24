@@ -7,8 +7,7 @@ jest.mock('react-redux', () => ({
 }))
 
 const _dispatchMock = jest.fn()
-const _useDispatchMock = useDispatch
-_useDispatchMock.mockImplementation(() => _dispatchMock)
+const useDispatchMock = useDispatch
+useDispatchMock.mockImplementation(() => _dispatchMock)
 
-export const useDispatchMock = _useDispatchMock
 export const dispatchMock = _dispatchMock

@@ -4,7 +4,7 @@ const filterAtStart = ''
 
 
 const filterSlice = createSlice({
-  name: 'filter',
+  name: 'searchFilter',
   initialState: filterAtStart,
   reducers: {
     changeFilter(state, action) {
