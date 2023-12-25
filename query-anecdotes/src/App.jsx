@@ -1,18 +1,29 @@
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
-import { useQuery } from '@tanstack/react-query'
-import { getAnecdotes } from './requests'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { getAnecdotes, updateAnecdote } from './requests'
 
 
 const App = () => {
+  const queryClient = useQueryClient()
+  const updateAnecdoteMutation = useMutation({
+    mutationFn: updateAnecdote,
+    onSuccess: (anecdote) => {
+      const anecdotes = queryClient.getQueryData(['anecdotes'])
+      const newAnecdotes = anecdotes.map(a => a.id === anecdote.id ? anecdote : a)
+      queryClient.setQueryData(['anecdotes'], newAnecdotes)
+    }
+  })
 
   const handleVote = (anecdote) => {
-    console.log('vote')
+    const newAnecdote = { ...anecdote, votes: anecdote.votes + 1  }
+    updateAnecdoteMutation.mutate(newAnecdote)
   }
 
   const anecdoteQuery = useQuery({
     queryKey: ['anecdotes'],
-    queryFn: getAnecdotes
+    queryFn: getAnecdotes,
+    refetchOnWindowFocus: false
   })
 
   if (anecdoteQuery.isLoading) {
@@ -23,7 +34,7 @@ const App = () => {
     return <div>Anecdote service not available due to problems in the server</div>
   }
 
-  const anecdotes = anecdoteQuery.data
+  const anecdotes = anecdoteQuery.data.sort((a, b) => b.votes - a.votes)
 
   return (
     <div>
